@@ -18,15 +18,15 @@ export const Registro = () => {
         e.preventDefault();
     
         const data = { 
-          "email": userEmail, 
+          "username": userName,
           "password": userPassword,
-          "username": userName,  };
+          "email": userEmail,   };
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         };
-        fetch("http://localhost:3000/user", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
+        fetch("http://localhost:3000/usuarios", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
         .then(response => response.json())      
         .then(res => console.log(res));  
     };

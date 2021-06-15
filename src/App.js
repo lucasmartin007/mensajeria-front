@@ -7,10 +7,8 @@ import { Registro } from "./components/Registro";
 
 import { InicioSesion } from "./components/InicioSesion";
 
+import { Mensajes } from "./components/Mensajes";
 
-export let logueado = false;
-
-export let registrarse = false;
 
 function App() {
   return (
@@ -18,6 +16,7 @@ function App() {
       <Switch>
         <Route exact path = "/" component = {InicioSesion} />
         <Route exact path = "/registrarse" component = {Registro} />
+        <Route exact path = "/mensajes" component = {Mensajes} />
       </Switch>
     </BrowserRouter>
   )
