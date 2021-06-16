@@ -2,6 +2,10 @@ import React from 'react'
 
 import { useState, useEffect } from "react";
 
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { editarId } from './Tienda/IdUsuarioSlice'
+
     
 export const InicioSesion = () => {
     let [userEmail, setUserEmail] = useState("");
@@ -11,7 +15,12 @@ export const InicioSesion = () => {
     const onUserPasswordChange = e => setUserPassword(e.target.value);
 
     //
+    const idUsuario = useSelector((state) => state.idUsuario.value)
+    const dispatch = useDispatch()
 
+    //
+
+    const [arrLogin, setArrLogin] = useState([]);
     const handleSubmitLogin = e => {
         e.preventDefault();
     
@@ -24,8 +33,8 @@ export const InicioSesion = () => {
           body: JSON.stringify(data)
         };
         fetch("http://localhost:3000/usuarios/login", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
-        .then(response => response.json())      
-        .then(res => console.log(res));  
+        .then(response => response.json())
+        .then(r => r.length > 0 ? dispatch(editarId(r[0].id)) : console.log("No ha iniciado sesion"))
     };
 
 //     useEffect(()=>{
@@ -45,6 +54,9 @@ export const InicioSesion = () => {
             Contraseña<br />
             <input type="password" value={userPassword} onChange={onUserPasswordChange} /><br /><br />
             <button onClick = {handleSubmitLogin}>Iniciar sesion</button><br /><br /> {/* */}
+            <br />
+            Id de usuario:{idUsuario}
+            <br />
 
             <a href = "/registrarse">Ir al registro</a><br />
         {/* </form> */}

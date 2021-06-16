@@ -10,10 +10,6 @@ export const url_usuarios = "http://localhost:3000/usuarios-campos"
 export const Mensajes = () => {
     const [listUsuarios, setListUsuarios] = useState([]);
 
-    // fetch(url_usuarios)
-    //     .then(res => res.json())
-    //     .then(data => setListUsuarios(data))
-
     const [envMensaje, setEnvMensaje] = useState("")
 
     const onEnvMensajeChange = e => setEnvMensaje(e.target.value);
