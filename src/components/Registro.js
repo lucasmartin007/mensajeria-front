@@ -4,6 +4,12 @@ import { useState } from "react";
 
 import { useEffect } from "react";
 
+//redux
+import { useSelector } from 'react-redux';
+
+//react router
+import { Redirect } from 'react-router';
+
 
 export const Registro = () => {
     const [userName, setUserName] = useState("");
@@ -31,6 +37,27 @@ export const Registro = () => {
         .then(res => console.log(res));  
     };
 
+    //
+    const idUsuario = useSelector((state) => state.idUsuario.value)
+    //
+    const [logueado, setLogueado] = useState(false)
+
+    const verificar_login = () => {
+      if(idUsuario !== 0){
+        setLogueado(true)
+        alert("Esta logueado")
+      }else{
+        alert(idUsuario)
+      }
+    }
+
+    useEffect(() => {
+      verificar_login()
+    }, [])
+
+    if(logueado){
+      return <Redirect to='/mensajes'/>;
+    }
     return (
         <div className="div_inicio">
         <h2>Registrar usuario</h2>
