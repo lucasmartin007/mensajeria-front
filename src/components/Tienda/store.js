@@ -6,7 +6,7 @@ import IdOtroUsuarioReducer from './IdOtroUsuarioSlice';
 export default configureStore({
   reducer: {
       idUsuario: idUsuarioReducer,
-      idOtroUsuario: IdOtroUsuarioReducer
+      // idOtroUsuario: IdOtroUsuarioReducer
   },
 })
 

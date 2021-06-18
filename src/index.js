@@ -5,8 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 //Redux
-import store from './components/Tienda/store'
-import { Provider } from 'react-redux'
+import store from './components/Tienda/store';
+import { Provider } from 'react-redux';
 
 
 ReactDOM.render(

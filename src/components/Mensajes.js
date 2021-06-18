@@ -24,7 +24,8 @@ export const Mensajes = () => {
     //
     const idUsuario = useSelector((state) => state.idUsuario.value)
     const dispatch = useDispatch()
-    const idOtroUsuario = useSelector((state) => state.idOtroUsuario.value)
+    // const idOtroUsuario = useSelector((state) => state.idOtroUsuario.value)
+    const [idOtroUsuario, setIdOtroUsuario] = useState(0);
 
     //
     const [logueado, setLogueado] = useState(true)
@@ -47,15 +48,18 @@ export const Mensajes = () => {
         }
     }
 
-    //
-    const establecerOtroId = (id_otro_usuario) => {
-        // alert("Estableciendo..." + id_otro_usuario)
-        dispatch(editarOtroId(id_otro_usuario))
-        // alert(idOtroUsuario)
-        buscNombreOtroUsuario(id_otro_usuario)
+    // //
+    // const establecerOtroId = (id_otro_usuario) => {
+    //     // alert("Estableciendo..." + id_otro_usuario)
+    //     // dispatch(editarOtroId(id_otro_usuario))
+    //     setIdOtroUsuario(id_otro_usuario);
+    //     // alert(idOtroUsuario)
+    //     buscNombreOtroUsuario(idOtroUsuario);
 
-        verMensajes()
-    }
+    //     // alert(idOtroUsuario)
+
+    //     verMensajes();
+    // }
     const buscNombreOtroUsuario = (id_otro_usuario) => {
         const url_ot_amigo = "http://localhost:3000/usuario-nombre/" + id_otro_usuario + "/"
         fetch(url_ot_amigo)
@@ -70,8 +74,8 @@ export const Mensajes = () => {
         // setTimeout((alert(idOtroUsuario)), 500)
     }
 
-    const verMensajes = async() => {
-        const url_ver_mensajes = "http://localhost:3000/ver-mensajes"
+    const verMensajes = () => {
+        const url_ver_mensajes = "http://localhost:3000/ver-mensajes";
         const dataMensajes = { 
             "idUsuario": idUsuario,
             "idOtroUsuario": idOtroUsuario   };
@@ -86,8 +90,10 @@ export const Mensajes = () => {
             .then(data => setListMensajes(data))
         }
 
-        console.log("Viendo mensajes")
-    }    
+        // console.log("Viendo mensajes");
+
+        console.log(listMensajes)
+    }
     
     const handleSubmitMensaje = e => {
         e.preventDefault();
@@ -102,8 +108,12 @@ export const Mensajes = () => {
           body: JSON.stringify(data)
         };
         fetch("http://localhost:3000/messages", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
-        .then(response => response.json())
-        .then(r => console.log("Mensaje enviado"))
+            .then(response => response.json())
+            .then(r => console.log("Mensaje enviado"))
+
+        setEnvMensaje("")
+
+        // alert("Mensaje enviado")
 
         verMensajes()
     };
@@ -129,9 +139,30 @@ export const Mensajes = () => {
                     setNomUsuario(r[0].username)
                 }
             })
-
-        setInterval(verMensajes,1000)
 	}, [])
+
+    useEffect(() => {
+        const establecerOtroId = (idOtroUsuario) => {
+            setIdOtroUsuario(idOtroUsuario);
+            buscNombreOtroUsuario(idOtroUsuario);
+            verMensajes();
+        }
+        establecerOtroId(idOtroUsuario);
+    }, [idOtroUsuario])
+
+    useEffect(() => {
+        const establecerMensajes = (listMensajes) => {
+            setListMensajes(listMensajes);
+        }
+        establecerMensajes(listMensajes);
+    }, [listMensajes])
+
+    useEffect(() => {
+        const establecerEnvMensaje = (envMensaje) => {
+            setEnvMensaje(envMensaje);
+        }
+        establecerEnvMensaje(envMensaje);
+    }, [envMensaje])
 
     if(!logueado){
         return <Redirect to='/'/>;
@@ -174,7 +205,7 @@ export const Mensajes = () => {
                     Usuarios:<br />
                     <section>
                     {listUsuarios.map(usuar => (
-                        <div className = "div_item_usuario" onClick = {() => establecerOtroId(usuar.id)}>
+                        <div className = "div_item_usuario" onClick = {() => {setIdOtroUsuario(usuar.id)}}>
                         <span key = {usuar.id}>
                             {usuar.username}
                         </span>
@@ -187,5 +218,4 @@ export const Mensajes = () => {
         </div>
     )
 }
-
 // export default Mensajes
