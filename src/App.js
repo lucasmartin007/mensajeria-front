@@ -5,7 +5,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import { Registro } from "./components/Registro";
 
-import { InicioSesion } from "./components/InicioSesion";
+// import { InicioSesion } from "./components/InicioSesion";
+import { InicioSesionContainer } from './components/InicioSesion';
 
 import { Mensajes } from "./components/Mensajes";
 
@@ -14,7 +15,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path = "/" component = {InicioSesion} />
+        <Route exact path = "/" component = {InicioSesionContainer} />
         <Route exact path = "/registrarse" component = {Registro} />
         <Route exact path = "/mensajes" component = {Mensajes} />
       </Switch>

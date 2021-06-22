@@ -6,14 +6,16 @@ import { useState, useEffect } from "react";
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { editarId } from './Tienda/IdUsuarioSlice';
+import { editarIdUsuario } from './Tienda/IdUsuarioSlice';
 import { editarOtroId } from './Tienda/IdOtroUsuarioSlice';
+
+import { connect } from 'react-redux';
 
 //react router
 import { Redirect } from 'react-router';
 
 
-export const Mensajes = () => {
+export const Mensajes = ({ editarIdUsuario }) => {
     const url_usuarios = "http://localhost:3000/usuarios-campos"
     const [listUsuarios, setListUsuarios] = useState([]);
 
@@ -31,7 +33,8 @@ export const Mensajes = () => {
     const [logueado, setLogueado] = useState(true)
 
     const cerrar_sesion = () => {
-        dispatch(editarId(0))
+        // dispatch(editarId(0))
+        editarIdUsuario(0)
         window.location.replace("")
     }
 
@@ -219,3 +222,13 @@ export const Mensajes = () => {
     )
 }
 // export default Mensajes
+
+const mapState = (state) => ({
+	idUsuario: state.idUsuario,
+})
+
+const mapDispatch = (dispatch) => ({
+	editarIdUsuario: dispatch.idUsuario.editarIdUsuario,
+})
+
+export default connect(mapState, mapDispatch)(Mensajes)

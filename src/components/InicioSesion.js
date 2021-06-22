@@ -4,13 +4,21 @@ import { useState, useEffect } from "react";
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { editarId } from './Tienda/IdUsuarioSlice';
+import { editarIdUsuario } from './Tienda/IdUsuarioSlice';
+import { connect } from 'react-redux';
+
+import store from "./Tienda/store";
+
+//rematch
 
 //react router
 import { Redirect } from 'react-router';
 
     
-export const InicioSesion = () => {
+export const InicioSesion = (props) => {
+    // const { dispatch } = store
+    const { dispatch } = store
+
     let [userUsername, setUserUsername] = useState("");
     let [userPassword, setUserPassword] = useState("");
 
@@ -18,8 +26,8 @@ export const InicioSesion = () => {
     const onUserPasswordChange = e => setUserPassword(e.target.value);
 
     //
-    const idUsuario = useSelector((state) => state.idUsuario.value)
-    const dispatch = useDispatch()
+    // const idUsuario = useSelector((state) => state.idUsuario.value)
+    // const dispatch = useDispatch()
 
     //
     const [logueado, setLogueado] = useState(false)
@@ -41,12 +49,16 @@ export const InicioSesion = () => {
         .then(response => response.json())
         .then(r => {
           if(r.length > 0){
-            dispatch(editarId(r[0].id))
+            // dispatch(editarId(r[0].id))
+            // editarIdUsuario(r[0].id)
+            props.editarIdUsuario()
             setLogueado(true)
 
             // alert(r[0].id)
           }else{
-            dispatch(editarId(0))
+            // dispatch(editarId(0))
+            // editarIdUsuario(0)
+            props.editarIdUsuario()
           }
         } )
     };
@@ -72,9 +84,27 @@ export const InicioSesion = () => {
 
             <a href = "/registrarse">Ir al registro</a><br />
         {/* </form> */}
+        <div>Id del usuario: {props.idUsuario}</div>
         </div>
     )
 }
 
 // export default InicioSesion
+
+// const { tienda } = store
+
+const mapState = (state) => ({
+	idUsuario: state.idUsuario,
+})
+
+const mapDispatch = (dispatch) => ({
+	editarIdUsuario:() => dispatch.idUsuario.editarIdUsuario(1),
+})
+
+// export default connect(mapState, mapDispatch)(InicioSesion)
+
+export const InicioSesionContainer = connect(
+  mapState,
+  mapDispatch
+)(InicioSesion)
 
