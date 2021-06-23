@@ -52,7 +52,7 @@ export const InicioSesion = (props) => {
             // dispatch(editarId(r[0].id))
             // editarIdUsuario(r[0].id)
             props.editarIdUsuario()
-            setLogueado(true)
+            // setLogueado(true)
 
             // alert(r[0].id)
           }else{
@@ -94,11 +94,11 @@ export const InicioSesion = (props) => {
 // const { tienda } = store
 
 const mapState = (state) => ({
-	idUsuario: state.idUsuario,
+	idUsuario: state.usuario.idUsuario,
 })
 
 const mapDispatch = (dispatch) => ({
-	editarIdUsuario:() => dispatch.idUsuario.editarIdUsuario(1),
+	editarIdUsuario:() => dispatch.usuario.editarIdUsuario(1),
 })
 
 // export default connect(mapState, mapDispatch)(InicioSesion)

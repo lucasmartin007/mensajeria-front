@@ -17,7 +17,7 @@
 
 // export default idUsuarioSlice.reducer
 
-const modelIdUsuarioSlice = {
+export default {
   state: 0, // initial state
   reducers: {
       // handle state changes with pure functions
@@ -36,4 +36,4 @@ const modelIdUsuarioSlice = {
   }),
 }
 
-export default modelIdUsuarioSlice
+// export default usuario

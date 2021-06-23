@@ -11,9 +11,9 @@
 // })
 
 import { init } from '@rematch/core';
-import modelIdUsuarioSlice from './IdUsuarioSlice';
+import usuario from './index.tsx';
 
-const store = init({ modelIdUsuarioSlice }) //models
+const store = init({ usuario }) //models
 
 export default store
 
