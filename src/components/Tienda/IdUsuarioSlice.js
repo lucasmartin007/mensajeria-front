@@ -22,7 +22,7 @@ export default {
   reducers: {
       // handle state changes with pure functions
       editarIdUsuario(state, payload){
-        return payload
+        this.state = payload
       },
   },
   effects: (dispatch) => ({

@@ -14,6 +14,8 @@ import store from "./Tienda/store";
 //react router
 import { Redirect } from 'react-router';
 
+import { usuario } from './Tienda/index.tsx';
+
     
 export const InicioSesion = (props) => {
     // const { dispatch } = store

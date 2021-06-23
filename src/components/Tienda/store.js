@@ -11,7 +11,7 @@
 // })
 
 import { init } from '@rematch/core';
-import usuario from './index.tsx';
+import { usuario } from './index.tsx';
 
 const store = init({ usuario }) //models
 
