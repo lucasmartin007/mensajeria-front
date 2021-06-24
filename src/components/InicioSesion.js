@@ -9,33 +9,20 @@ import { connect } from 'react-redux';
 
 import store from "./Tienda/store";
 
-//rematch
-
 //react router
 import { Redirect } from 'react-router';
 
-import { usuario } from './Tienda/index.tsx';
-
     
 export const InicioSesion = (props) => {
-    // const { dispatch } = store
-    const { dispatch } = store
 
     let [userUsername, setUserUsername] = useState("");
     let [userPassword, setUserPassword] = useState("");
 
     const onUserUsernameChange = e => setUserUsername(e.target.value);
     const onUserPasswordChange = e => setUserPassword(e.target.value);
-
-    //
-    // const idUsuario = useSelector((state) => state.idUsuario.value)
-    // const dispatch = useDispatch()
-
-    //
+    
     const [logueado, setLogueado] = useState(false)
-
-    //
-    const [arrLogin, setArrLogin] = useState([]);
+    
     const handleSubmitLogin = e => {
         e.preventDefault();
     
@@ -51,23 +38,13 @@ export const InicioSesion = (props) => {
         .then(response => response.json())
         .then(r => {
           if(r.length > 0){
-            // dispatch(editarId(r[0].id))
-            // editarIdUsuario(r[0].id)
-            props.editarIdUsuario()
+            props.usuario.editarIdUsuario(0)
             // setLogueado(true)
-
-            // alert(r[0].id)
           }else{
-            // dispatch(editarId(0))
-            // editarIdUsuario(0)
-            props.editarIdUsuario()
+            props.usuario.editarIdUsuario(0)
           }
         } )
     };
-
-    const alertar = () => {
-      alert("Hola")
-    }
 
     //
     if (logueado) {
@@ -86,7 +63,7 @@ export const InicioSesion = (props) => {
 
             <a href = "/registrarse">Ir al registro</a><br />
         {/* </form> */}
-        <div>Id del usuario: {props.idUsuario}</div>
+        <div>Id del usuario: {props.usuario.idUsuario}</div>
         </div>
     )
 }
@@ -95,12 +72,19 @@ export const InicioSesion = (props) => {
 
 // const { tienda } = store
 
+import { init } from '@rematch/core'
+import * as modelsUsuarios from './Tienda/IdUsuarioSlice'
+
+const store = init({
+	modelsUsuarios,
+})
+
 const mapState = (state) => ({
-	idUsuario: state.usuario.idUsuario,
+	idUsuario: store.modelsUsuarios.state.usuario.idUsuario,
 })
 
 const mapDispatch = (dispatch) => ({
-	editarIdUsuario:() => dispatch.usuario.editarIdUsuario(1),
+	editarIdUsuario:() => store.modelsUsuarios.dispatch.usuario.editarIdUsuario(1),
 })
 
 // export default connect(mapState, mapDispatch)(InicioSesion)

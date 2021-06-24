@@ -1,12 +1,22 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 //Redux
-import store from './components/Tienda/store';
-import { Provider } from 'react-redux';
+// import store from './components/Tienda/store';
+
+//
+
+import React from 'react'
+import { Provider } from 'react-redux'
+import { init } from '@rematch/core'
+import * as modelsUsuarios from './Tienda/IdUsuarioSlice'
+import App from './App'
+
+
+const store = init({
+	modelsUsuarios,
+})
 
 
 ReactDOM.render(
