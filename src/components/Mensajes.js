@@ -11,6 +11,8 @@ import { editarId } from './Tienda/IdUsuarioSlice';
 //react router
 import { Redirect } from 'react-router';
 
+import { store, persistor } from './Tienda/storePersist';
+
 
 export const Mensajes = () => {
     const url_usuarios = "http://localhost:3000/usuarios-campos"
@@ -21,7 +23,7 @@ export const Mensajes = () => {
     const onEnvMensajeChange = e => setEnvMensaje(e.target.value);
 
     //
-    const idUsuario = useSelector((state) => state.idUsuario.value)
+    const idUsuario = store.getState().login.idUsuario
     const dispatch = useDispatch()
     // const idOtroUsuario = useSelector((state) => state.idOtroUsuario.value)
     const [idOtroUsuario, setIdOtroUsuario] = useState(0);
