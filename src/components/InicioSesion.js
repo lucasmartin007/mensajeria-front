@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 
 import { useState, useEffect } from "react";
 
@@ -9,23 +9,30 @@ import { editarId } from './Tienda/IdUsuarioSlice';
 //react router
 import { Redirect } from 'react-router';
 
-    
-export const InicioSesion = () => {
+import { store, persistor } from './Tienda/storePersist';
+
+import { Provider, connect } from 'react-redux';
+
+
+// action creator
+function updateIdUsuario(idUsuario) {
+  return {
+    type: 'UPDATE',
+    idUsuario,
+  };
+}
+
+export const InicioSesion = ({ usuario }) => {
     let [userUsername, setUserUsername] = useState("");
     let [userPassword, setUserPassword] = useState("");
 
     const onUserUsernameChange = e => setUserUsername(e.target.value);
     const onUserPasswordChange = e => setUserPassword(e.target.value);
-
-    //
-    const idUsuario = useSelector((state) => state.idUsuario.value)
-    const dispatch = useDispatch()
-
-    //
+    
     const [logueado, setLogueado] = useState(false)
 
-    //
-    const [arrLogin, setArrLogin] = useState([]);
+    const dispatch = useDispatch()
+    
     const handleSubmitLogin = e => {
         e.preventDefault();
     
@@ -41,19 +48,18 @@ export const InicioSesion = () => {
         .then(response => response.json())
         .then(r => {
           if(r.length > 0){
-            dispatch(editarId(r[0].id))
-            setLogueado(true)
+            store.dispatch(updateIdUsuario(r[0].id))
 
-            // alert(r[0].id)
+            setLogueado(true)
           }else{
-            dispatch(editarId(0))
+            store.dispatch(updateIdUsuario(0))
           }
         } )
     };
 
-    const alertar = () => {
-      alert("Hola")
-    }
+    useEffect(() => {
+        console.log(store)
+	  }, [])
 
     //
     if (logueado) {
@@ -62,7 +68,7 @@ export const InicioSesion = () => {
     return (
         <div className="div_inicio">
         <h2>Iniciar sesion</h2>
-        {/* <form> */}
+        <form>
             Nombre de usuario<br />
             <input type="text" value={userUsername} onChange={onUserUsernameChange} /><br /><br />
             Contraseña<br />
@@ -71,10 +77,26 @@ export const InicioSesion = () => {
             <br />
 
             <a href = "/registrarse">Ir al registro</a><br />
-        {/* </form> */}
+        </form>
+            <div>Id de usuario: {store.getState().login.idUsuario}</div>
         </div>
     )
 }
 
 // export default InicioSesion
+
+//
+
+const mapStateToProps = state => ({
+  value: state.usuario.idUsuario
+});
+
+const mapDispatchToProps = {
+  onUpdateId: () => ({type:"UPDATE"})
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InicioSesion);
 

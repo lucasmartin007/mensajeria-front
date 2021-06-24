@@ -10,6 +10,8 @@ import { useSelector } from 'react-redux';
 //react router
 import { Redirect } from 'react-router';
 
+import { store, persistor } from './Tienda/storePersist';
+
 
 export const Registro = () => {
     const [userName, setUserName] = useState("");
@@ -38,7 +40,7 @@ export const Registro = () => {
     };
 
     //
-    const idUsuario = useSelector((state) => state.idUsuario.value)
+    const idUsuario = store.getState().login.idUsuario
     //
     const [logueado, setLogueado] = useState(false)
 

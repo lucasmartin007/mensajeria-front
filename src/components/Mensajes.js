@@ -7,7 +7,6 @@ import { useState, useEffect } from "react";
 //redux
 import { useSelector, useDispatch } from 'react-redux';
 import { editarId } from './Tienda/IdUsuarioSlice';
-import { editarOtroId } from './Tienda/IdOtroUsuarioSlice';
 
 //react router
 import { Redirect } from 'react-router';
