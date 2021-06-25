@@ -1,7 +1,5 @@
 import React from 'react';
 
-import ReactDOM from "react-dom";
-
 import { useState, useEffect } from "react";
 
 //redux
@@ -22,9 +20,21 @@ function updateIdUsuario(idUsuario) {
   }
   
   export const Mensajes = () => {
+    let [usersSearch, setUsersSearch] = useState("");
+    let [messagesSearch, setMessagesSearch] = useState("");
+    
+    const onUsersSearchChange = e => {
+        setUsersSearch(e.target.value);
+    }
+    const onMessagesSearchChange = e => {
+        setMessagesSearch(e.target.value);
+    }
+
     const url_usuarios = "http://localhost:3000/usuarios-campos"
+    const [listUsuariosInicial, setListUsuariosInicial] = useState([]);
     const [listUsuarios, setListUsuarios] = useState([]);
 
+    const [listMensajesInicial, setListMensajesInicial] = useState([]);
     const [listMensajes, setListMensajes] = useState([])
     const [envMensaje, setEnvMensaje] = useState("")
     const onEnvMensajeChange = e => setEnvMensaje(e.target.value);
@@ -32,7 +42,6 @@ function updateIdUsuario(idUsuario) {
     //
     const idUsuario = store.getState().login.idUsuario
     const dispatch = useDispatch()
-    // const idOtroUsuario = useSelector((state) => state.idOtroUsuario.value)
     const [idOtroUsuario, setIdOtroUsuario] = useState(0);
 
     //
@@ -56,18 +65,7 @@ function updateIdUsuario(idUsuario) {
         }
     }
 
-    // //
-    // const establecerOtroId = (id_otro_usuario) => {
-    //     // alert("Estableciendo..." + id_otro_usuario)
-    //     // dispatch(editarOtroId(id_otro_usuario))
-    //     setIdOtroUsuario(id_otro_usuario);
-    //     // alert(idOtroUsuario)
-    //     buscNombreOtroUsuario(idOtroUsuario);
-
-    //     // alert(idOtroUsuario)
-
-    //     verMensajes();
-    // }
+    //
     const buscNombreOtroUsuario = (id_otro_usuario) => {
         const url_ot_amigo = "http://localhost:3000/usuario-nombre/" + id_otro_usuario + "/"
         fetch(url_ot_amigo)
@@ -77,9 +75,28 @@ function updateIdUsuario(idUsuario) {
                     setNomOtroUsuario(r[0].username)
                 }
             })
-        // alert(nomOtroUsuario)
-        // alert(idOtroUsuario)
-        // setTimeout((alert(idOtroUsuario)), 500)
+    }
+
+    const cambiarUsuarios = () => {
+        let arr_usuarios2 = []
+        for(let i = 0; i < listUsuariosInicial.length; i++){
+            if(listUsuariosInicial[i].username.indexOf(usersSearch) > -1){
+                arr_usuarios2.push(listUsuariosInicial[i])
+            }
+        }
+        setListUsuarios(arr_usuarios2)
+
+    }
+
+    const cambiarMensajes = () => {
+        let arr_mensajes2 = []
+        for(let i = 0; i < listMensajesInicial.length; i++){
+            if(listMensajesInicial[i].message.indexOf(messagesSearch) > -1){
+                arr_mensajes2.push(listMensajesInicial[i])
+            }
+        }
+        setListMensajes(arr_mensajes2)
+
     }
 
     const verMensajes = () => {
@@ -95,10 +112,11 @@ function updateIdUsuario(idUsuario) {
         if(idUsuario !== 0 && idOtroUsuario !== 0){
 		fetch(url_ver_mensajes, requestOptionsMensajes)
             .then(res => res.json())
-            .then(data => setListMensajes(data))
+            .then(data => {
+                setListMensajesInicial(data)
+                setListMensajes(data)
+            })
         }
-
-        // console.log("Viendo mensajes");
 
         console.log(listMensajes)
     }
@@ -121,8 +139,6 @@ function updateIdUsuario(idUsuario) {
 
         setEnvMensaje("")
 
-        // alert("Mensaje enviado")
-
         verMensajes()
     };
 
@@ -138,7 +154,10 @@ function updateIdUsuario(idUsuario) {
         };
 		fetch(url_usuarios, requestOptionsUsuarios)
             .then(res => res.json())
-            .then(data => setListUsuarios(data))
+            .then(data => {
+                setListUsuariosInicial(data)
+                setListUsuarios(data)
+            })
 
         fetch(url_us_actual)
             .then(res => res.json())
@@ -166,11 +185,43 @@ function updateIdUsuario(idUsuario) {
     }, [listMensajes])
 
     useEffect(() => {
+        const establecerListUsuariosInicial = (listUsuariosInicial) => {
+            setListUsuariosInicial(listUsuariosInicial);
+        }
+        establecerListUsuariosInicial(listUsuariosInicial);
+    }, [listUsuariosInicial])
+
+    useEffect(() => {
+        const establecerListUsuarios = (listUsuarios) => {
+            setListUsuarios(listUsuarios);
+        }
+        establecerListUsuarios(listUsuarios);
+    }, [listUsuarios])
+
+    useEffect(() => {
         const establecerEnvMensaje = (envMensaje) => {
             setEnvMensaje(envMensaje);
         }
         establecerEnvMensaje(envMensaje);
     }, [envMensaje])
+
+    useEffect(() => {
+        const establecerUsersSearch = (usersSearch) => {
+            setUsersSearch(usersSearch);
+        }
+        establecerUsersSearch(usersSearch);
+
+        cambiarUsuarios();
+    }, [usersSearch])
+
+    useEffect(() => {
+        const messagesSearch = (messagesSearch) => {
+            setUsersSearch(messagesSearch);
+        }
+        messagesSearch(messagesSearch);
+
+        cambiarMensajes();
+    }, [messagesSearch])
 
     if(!logueado){
         return <Redirect to='/'/>;
@@ -185,7 +236,11 @@ function updateIdUsuario(idUsuario) {
 
             <div className = "div_mensajes">
                 <div className = "div_contenido">
-                    Mensajes:<br />
+                    Mensajes:<br />                    
+                    <div>
+                        Buscar<br />
+                        <input type="text" value={messagesSearch} onChange={onMessagesSearchChange} />
+                    </div>
                     <div className = "div_ver_mensajes">
                         <div className = "div_nom_otro">
                             <span><b>{nomOtroUsuario}</b></span>
@@ -211,6 +266,10 @@ function updateIdUsuario(idUsuario) {
             <div className = "div_usuarios">
                 <div className = "div_ver_usuarios">
                     Usuarios:<br />
+                    <div>
+                        Buscar<br />
+                        <input type="text" value={usersSearch} onChange={onUsersSearchChange} />
+                    </div>
                     <section>
                     {listUsuarios.map(usuar => (
                         <div className = "div_item_usuario" onClick = {() => {setIdOtroUsuario(usuar.id)}}>
@@ -226,4 +285,5 @@ function updateIdUsuario(idUsuario) {
         </div>
     )
 }
+
 // export default Mensajes
