@@ -1,15 +1,11 @@
 import React from 'react'
-
 import { useState } from "react";
-
 import { useEffect } from "react";
 
 //redux
-import { useSelector } from 'react-redux';
 
 //react router
 import { Redirect } from 'react-router';
-
 import { store, persistor } from './Tienda/storePersist';
 
 
@@ -48,8 +44,6 @@ export const Registro = () => {
       if(idUsuario !== 0){
         setLogueado(true)
         alert("Esta logueado")
-      }else{
-        alert(idUsuario)
       }
     }
 
@@ -79,3 +73,4 @@ export const Registro = () => {
 }
 
 // export default Registro
+

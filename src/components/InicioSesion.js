@@ -1,10 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
 
 import { useState, useEffect } from "react";
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { editarId } from './Tienda/IdUsuarioSlice';
 
 //react router
 import { Redirect } from 'react-router';
@@ -84,19 +83,4 @@ export const InicioSesion = ({ usuario }) => {
 }
 
 // export default InicioSesion
-
-//
-
-const mapStateToProps = state => ({
-  value: state.usuario.idUsuario
-});
-
-const mapDispatchToProps = {
-  onUpdateId: () => ({type:"UPDATE"})
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InicioSesion);
 

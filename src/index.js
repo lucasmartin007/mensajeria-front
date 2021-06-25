@@ -1,11 +1,9 @@
 import ReactDOM from 'react-dom';
 import './index.css';
-import ConnectedApp from "./App";
+import App from "./App";
 import reportWebVitals from './reportWebVitals';
 
 import React from 'react';
-import { render } from 'react-dom';
-import configureStore from './components/Tienda/storePersist';
 import { Provider, connect } from 'react-redux';
 import { PersistGate } from 'redux-persist/lib/integration/react'
 import { store, persistor } from './components/Tienda/storePersist'
@@ -15,7 +13,7 @@ ReactDOM.render(
   <React.StrictMode>
   <Provider store = {store}>
     <PersistGate persistor = { persistor }>
-    <ConnectedApp />
+    <App />
     </PersistGate>
   </Provider>
   </React.StrictMode>,

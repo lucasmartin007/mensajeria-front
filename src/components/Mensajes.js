@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 
 //redux
 import { useSelector, useDispatch } from 'react-redux';
-import { editarId } from './Tienda/IdUsuarioSlice';
 
 //react router
 import { Redirect } from 'react-router';
@@ -14,7 +13,15 @@ import { Redirect } from 'react-router';
 import { store, persistor } from './Tienda/storePersist';
 
 
-export const Mensajes = () => {
+// action creator
+function updateIdUsuario(idUsuario) {
+    return {
+      type: 'UPDATE',
+      idUsuario,
+    };
+  }
+  
+  export const Mensajes = () => {
     const url_usuarios = "http://localhost:3000/usuarios-campos"
     const [listUsuarios, setListUsuarios] = useState([]);
 
@@ -32,7 +39,7 @@ export const Mensajes = () => {
     const [logueado, setLogueado] = useState(true)
 
     const cerrar_sesion = () => {
-        dispatch(editarId(0))
+        store.dispatch(updateIdUsuario(0))
         window.location.replace("")
     }
 
