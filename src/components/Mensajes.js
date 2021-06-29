@@ -133,13 +133,15 @@ function updateIdUsuario(idUsuario) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         };
+        
         fetch("http://localhost:3000/messages", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
             .then(response => response.json())
-            .then(r => console.log("Mensaje enviado"))
+            .then(r => {
+                console.log("Mensaje enviado")
+                verMensajes()
+            })
 
         setEnvMensaje("")
-
-        verMensajes()
     };
 
     useEffect(() => {
@@ -239,7 +241,7 @@ function updateIdUsuario(idUsuario) {
                     Mensajes:<br />                    
                     <div>
                         Buscar<br />
-                        <input type="text" value={messagesSearch} onChange={onMessagesSearchChange} />
+                        <input type="text" value={messagesSearch} onChange={onMessagesSearchChange} className = "inp_busq_mensajes" />
                     </div>
                     <div className = "div_ver_mensajes">
                         <div className = "div_nom_otro">
@@ -268,7 +270,7 @@ function updateIdUsuario(idUsuario) {
                     Usuarios:<br />
                     <div>
                         Buscar<br />
-                        <input type="text" value={usersSearch} onChange={onUsersSearchChange} />
+                        <input type="text" value={usersSearch} onChange={onUsersSearchChange} className = "inp_busq_usuarios" />
                     </div>
                     <section>
                     {listUsuarios.map(usuar => (
