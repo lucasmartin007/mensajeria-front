@@ -20,11 +20,20 @@ export const Registro = () => {
 
     const handleSubmitUser = e => {
         e.preventDefault();
+
+        let fecha = new Date()
+        let dia = fecha.getDate()
+        let mes = fecha.getMonth()
+        let anio = fecha.getFullYear()
+        let hora = fecha.getHours()
+        let minutos = fecha.getMinutes()
+        let f_actual = dia.toString() + "/" + mes.toString() + "/" + anio.toString() + " " + hora.toString() + ":" + minutos.toString()
     
         const data = { 
           "username": userName,
           "password": userPassword,
-          "email": userEmail,   };
+          "email": userEmail,
+          "created_at": fecha,   };
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -43,7 +52,6 @@ export const Registro = () => {
     const verificar_login = () => {
       if(idUsuario !== 0){
         setLogueado(true)
-        alert("Esta logueado")
       }
     }
 

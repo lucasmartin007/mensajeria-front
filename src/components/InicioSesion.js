@@ -10,8 +10,6 @@ import { Redirect } from 'react-router';
 
 import { store, persistor } from './Tienda/storePersist';
 
-import { Provider, connect } from 'react-redux';
-
 
 // action creator
 function updateIdUsuario(idUsuario) {
@@ -30,7 +28,15 @@ export const InicioSesion = ({ usuario }) => {
     
     const [logueado, setLogueado] = useState(false)
 
+    const idUsuario = store.getState().login.idUsuario
+
     const dispatch = useDispatch()
+    
+    const verificar_login = () => {
+      if(idUsuario !== 0){
+        setLogueado(true)
+      }
+    }
     
     const handleSubmitLogin = e => {
         e.preventDefault();
@@ -57,7 +63,7 @@ export const InicioSesion = ({ usuario }) => {
     };
 
     useEffect(() => {
-        console.log(store)
+        verificar_login()
 	  }, [])
 
     //

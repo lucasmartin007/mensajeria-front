@@ -50,7 +50,8 @@ body{
 .div_mensajes{
   padding:10px 10px 10px 10px;
   width:32%;
-  height:auto;
+  /* height:auto; */
+  height:120%;
   display:inline-block;
 
   position:relative;
@@ -104,7 +105,7 @@ body{
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
   border-radius:2px 2px 2px 2px;
   
-  height:35px;
+  /* height:35px; */
 }
 
 .inp_env_mensaje{
@@ -134,6 +135,10 @@ body{
   margin-bottom:2px;
 }
 
+.it_mensaj_izquierda, .it_mensaj_derecha{
+  margin-bottom:10px;
+}
+
 .it_mensaj_derecha{
   text-align:right;
 }
@@ -146,7 +151,18 @@ body{
   border-radius:2px;
 }
 
-.inp_busq_usuarios, .inp_busq_mensajes{
+.it_mensaj_fecha{
+  background-color:rgb(70, 70, 70);
+  color:white;
+}
+
+.it_mensaj_descarga{
+  cursor:pointer;
+  text-decoration:underline;
+  color:rgb(166, 249, 255);
+}
+
+.inp_busq_usuarios, .inp_busq_mensajes, .inp_busq_us_mensajes{
   width:80%;
   border-radius:3px;
 }

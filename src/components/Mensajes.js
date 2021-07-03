@@ -10,6 +10,10 @@ import { Redirect } from 'react-router';
 
 import { store, persistor } from './Tienda/storePersist';
 
+import moment from 'moment';
+
+import axios from 'axios';
+
 
 // action creator
 function updateIdUsuario(idUsuario) {
@@ -20,14 +24,16 @@ function updateIdUsuario(idUsuario) {
   }
   
   export const Mensajes = () => {
-    let [usersSearch, setUsersSearch] = useState("");
-    let [messagesSearch, setMessagesSearch] = useState("");
+    let [usMessSearch, setUsMessSearch] = useState("");
+
+    //
+    const [selectedFile, setSelectedFile] = useState();
+    const [ isFileSelected, setIsFileSelected ] = useState(false);
+	const [isFilePicked, setIsFilePicked] = useState(false);
     
-    const onUsersSearchChange = e => {
-        setUsersSearch(e.target.value);
-    }
-    const onMessagesSearchChange = e => {
-        setMessagesSearch(e.target.value);
+    const onUsMessSearchChange = e => {
+        setUsMessSearch(e.target.value);
+        // setListMensajes(listMensajes.filter(x => x.message.indexOf(usMessSearch) > -1))
     }
 
     const url_usuarios = "http://localhost:3000/usuarios-campos"
@@ -80,7 +86,7 @@ function updateIdUsuario(idUsuario) {
     const cambiarUsuarios = () => {
         let arr_usuarios2 = []
         for(let i = 0; i < listUsuariosInicial.length; i++){
-            if(listUsuariosInicial[i].username.indexOf(usersSearch) > -1){
+            if(listUsuariosInicial[i].username.indexOf(usMessSearch) > -1){
                 arr_usuarios2.push(listUsuariosInicial[i])
             }
         }
@@ -91,7 +97,7 @@ function updateIdUsuario(idUsuario) {
     const cambiarMensajes = () => {
         let arr_mensajes2 = []
         for(let i = 0; i < listMensajesInicial.length; i++){
-            if(listMensajesInicial[i].message.indexOf(messagesSearch) > -1){
+            if(listMensajesInicial[i].message.indexOf(usMessSearch) > -1){
                 arr_mensajes2.push(listMensajesInicial[i])
             }
         }
@@ -117,32 +123,79 @@ function updateIdUsuario(idUsuario) {
                 setListMensajes(data)
             })
         }
-
-        console.log(listMensajes)
     }
+
+    const changeFileHandler = (event) => {
+		setSelectedFile(event.target.files[0]);
+		setIsFileSelected(true);
+
+	};
     
     const handleSubmitMensaje = e => {
         e.preventDefault();
+
+        let fecha = new Date();
     
-        const data = {
-            "sender": idUsuario,
-            "receiver": idOtroUsuario,
-            "message":envMensaje   };
+        let data = [];
+        if(isFileSelected){
+            data = {
+                "sender": idUsuario,
+                "receiver": idOtroUsuario,
+                "message":selectedFile.name,
+                "created_at":fecha,
+                "es_archivo":true,
+                "nombre_archivo":selectedFile.name,
+               };
+        }else{
+            data = {
+                "sender": idUsuario,
+                "receiver": idOtroUsuario,
+                "message":envMensaje,
+                "created_at":fecha,
+                "es_archivo":false,
+               };
+        }
+        
         const requestOptions = {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
-        };
-        
+        };        
         fetch("http://localhost:3000/messages", requestOptions) // "https://jsonplaceholder.typicode.com/posts"
             .then(response => response.json())
             .then(r => {
                 console.log("Mensaje enviado")
                 verMensajes()
             })
+            
+        if(isFileSelected){
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+        axios.post("http://localhost:3000/textFile", formData);
+        }
 
         setEnvMensaje("")
     };
+
+    const desc_archivo = (mensaje, fecha) => {
+        const nomarchivo = mensaje;
+        const fecha_numerica = Date.parse(fecha)
+
+        const url_desc_archivo = "http://localhost:3000/files/" + nomarchivo + "/" + fecha_numerica
+        const link = document.createElement("a");
+        link.target = "_blank";
+        link.download = nomarchivo
+        axios
+        .get(url_desc_archivo, {
+            responseType: "blob",
+        })
+        .then((res) => {
+            link.href = URL.createObjectURL(
+            new Blob([res.data], { type: "file/txt" })
+            );
+            link.click();
+        });
+    }
 
     useEffect(() => {
         verificar_login()
@@ -174,6 +227,8 @@ function updateIdUsuario(idUsuario) {
         const establecerOtroId = (idOtroUsuario) => {
             setIdOtroUsuario(idOtroUsuario);
             buscNombreOtroUsuario(idOtroUsuario);
+            setUsMessSearch("");
+            setListMensajes([]);
             verMensajes();
         }
         establecerOtroId(idOtroUsuario);
@@ -208,22 +263,14 @@ function updateIdUsuario(idUsuario) {
     }, [envMensaje])
 
     useEffect(() => {
-        const establecerUsersSearch = (usersSearch) => {
-            setUsersSearch(usersSearch);
+        const usMessSearch = (usMessSearch) => {
+            setUsMessSearch(usMessSearch);
         }
-        establecerUsersSearch(usersSearch);
+        usMessSearch(usMessSearch);
 
         cambiarUsuarios();
-    }, [usersSearch])
-
-    useEffect(() => {
-        const messagesSearch = (messagesSearch) => {
-            setUsersSearch(messagesSearch);
-        }
-        messagesSearch(messagesSearch);
-
         cambiarMensajes();
-    }, [messagesSearch])
+    }, [usMessSearch])
 
     if(!logueado){
         return <Redirect to='/'/>;
@@ -233,16 +280,17 @@ function updateIdUsuario(idUsuario) {
         <div>
             <div className = "div_usuario_actual">
                 <h2>Hola {nomUsuario} :)</h2>
+                <div>
+                    Buscar<br />
+                    <input type="text" value={usMessSearch} onChange={onUsMessSearchChange} className = "inp_busq_us_mensajes" />
+                </div>
+                <br />
                 <button onClick = {cerrar_sesion}>Cerrar sesion</button>                
             </div>
 
             <div className = "div_mensajes">
                 <div className = "div_contenido">
-                    Mensajes:<br />                    
-                    <div>
-                        Buscar<br />
-                        <input type="text" value={messagesSearch} onChange={onMessagesSearchChange} className = "inp_busq_mensajes" />
-                    </div>
+                    Mensajes:<br />
                     <div className = "div_ver_mensajes">
                         <div className = "div_nom_otro">
                             <span><b>{nomOtroUsuario}</b></span>
@@ -251,7 +299,16 @@ function updateIdUsuario(idUsuario) {
                             {listMensajes.map(mensaj => (
                                 <div className = "div_item_mensaje" className = {mensaj.sender == idUsuario ? "it_mensaj_derecha" : "it_mensaj_izquierda"}>
                                 <span key = {mensaj.id} className = "it_mensaje">
-                                    {mensaj.message}
+                                    {mensaj.es_archivo ? (
+                                        <span className = "it_mensaj_descarga" onClick = {() => desc_archivo(mensaj.message, mensaj.created_at)}>{mensaj.message}</span>
+                                    ) : (
+                                        <span>{mensaj.message}</span>
+                                    )}
+                                    
+                                </span>
+                                <br />
+                                <span className = "it_mensaj_fecha">
+                                    {moment(mensaj.created_at).format("HH:mm")}
                                 </span>
                                 </div>
                             ))}
@@ -260,18 +317,28 @@ function updateIdUsuario(idUsuario) {
                 </div>
 
                 <div className = "div_enviar_mensaje">
-                    <input type='text' className = "inp_env_mensaje" value = {envMensaje} onChange = {onEnvMensajeChange} /> 
-                    <button onClick = {handleSubmitMensaje}>ENVIAR</button>
+                    <form encType = "multipart/form-data" onSubmit = {handleSubmitMensaje}>
+                    <input type='text' className = "inp_env_mensaje" value = {envMensaje} onChange = {onEnvMensajeChange} />
+                    <input type = "file"  onChange={changeFileHandler}/>
+                    <br />
+                    <button type = "submit">ENVIAR</button>
+                    {isFileSelected ? (
+                    <div>
+                        <p>Filename: {selectedFile.name}</p>
+                        <p>Filetype: {selectedFile.type}</p>
+                        <p>Size in bytes: {selectedFile.size}</p>
+                    </div>
+                    ) : (
+                    <p>Select a file to show details</p>
+                    )}
+                    </form>
+
                 </div>
             </div>
 
             <div className = "div_usuarios">
                 <div className = "div_ver_usuarios">
                     Usuarios:<br />
-                    <div>
-                        Buscar<br />
-                        <input type="text" value={usersSearch} onChange={onUsersSearchChange} className = "inp_busq_usuarios" />
-                    </div>
                     <section>
                     {listUsuarios.map(usuar => (
                         <div className = "div_item_usuario" onClick = {() => {setIdOtroUsuario(usuar.id)}}>
@@ -283,7 +350,6 @@ function updateIdUsuario(idUsuario) {
                     </section>
                 </div>
             </div>
-            
         </div>
     )
 }
