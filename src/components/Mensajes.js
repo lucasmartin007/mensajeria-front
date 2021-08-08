@@ -130,6 +130,19 @@ function updateIdUsuario(idUsuario) {
 		setIsFileSelected(true);
 
 	};
+
+    //
+    function getDataUrl(img) {
+        // Create canvas
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        // Set width and height
+        canvas.width = img.width;
+        canvas.height = img.height;
+        // Draw the image
+        ctx.drawImage(img, 0, 0);
+        return canvas.toDataURL('image/jpeg');
+     }
     
     const handleSubmitMensaje = e => {
         e.preventDefault();
@@ -145,15 +158,17 @@ function updateIdUsuario(idUsuario) {
                 "created_at":fecha,
                 "es_archivo":true,
                 "nombre_archivo":selectedFile.name,
-               };
+            };
+            setSelectedFile([]);
         }else{
             data = {
                 "sender": idUsuario,
                 "receiver": idOtroUsuario,
-                "message":envMensaje,
+                "message":selectedFile.name,
                 "created_at":fecha,
                 "es_archivo":false,
-               };
+                "nombre_archivo":selectedFile.name,
+            };
         }
         
         const requestOptions = {
@@ -169,19 +184,33 @@ function updateIdUsuario(idUsuario) {
             })
             
         if(isFileSelected){
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        axios.post("http://localhost:3000/textFile", formData);
+        let nom_archivo = selectedFile.name;
+        let ext_archivo = getFileExtension1(nom_archivo);
+        if(ext_archivo === "txt"){
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            axios.post("http://localhost:3000/textFile", formData);
+        }else if(ext_archivo === "jpg"){
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            axios.post("http://localhost:3000/imageFile", formData);
+        }
+        
         }
 
         setEnvMensaje("")
     };
 
-    const desc_archivo = (mensaje, fecha) => {
+    function getFileExtension1(filename) {
+        return filename.split('.').pop();
+    }
+      
+
+    const desc_archivo_texto = (mensaje, fecha) => {
         const nomarchivo = mensaje;
         const fecha_numerica = Date.parse(fecha)
 
-        const url_desc_archivo = "http://localhost:3000/files/" + nomarchivo + "/" + fecha_numerica
+        const url_desc_archivo = "http://localhost:3000/textFiles/" + nomarchivo + "/" + fecha_numerica
         const link = document.createElement("a");
         link.target = "_blank";
         link.download = nomarchivo
@@ -194,6 +223,47 @@ function updateIdUsuario(idUsuario) {
             new Blob([res.data], { type: "file/txt" })
             );
             link.click();
+        });
+    }
+
+    const desc_archivo_imagen = (mensaje, fecha) => {
+        const nomarchivo = mensaje;
+        const fecha_numerica = Date.parse(fecha)
+
+        const url_desc_archivo = "http://localhost:3000/imageFiles/" + nomarchivo + "/" + fecha_numerica
+        const link = document.createElement("a");
+        link.target = "_blank";
+        link.download = nomarchivo
+        axios
+        .get(url_desc_archivo, {
+            responseType: "blob",
+        })
+        .then((res) => {
+            link.href = URL.createObjectURL(
+            new Blob([res.data], { type: "file/jpg" })
+            );
+            link.click();
+        });
+    }
+
+    const obtener_base64_imagen = (mensaje, fecha) => {
+        const nomarchivo = mensaje;
+        const fecha_numerica = Date.parse(fecha)
+
+        const url_obtener_base64 = "http://localhost:3000/base64ImageFile/" + nomarchivo + "/" + fecha_numerica
+        // const link = document.createElement("a");
+        // link.target = "_blank";
+        // link.download = nomarchivo
+        axios
+        .get(url_obtener_base64, {
+            responseType: "base64",
+        })
+        .then((res) => {
+            // link.href = URL.createObjectURL(
+            // new Blob([res.data], { type: "file/jpg" })
+            // );
+            // link.click();
+            alert(res);
         });
     }
 
@@ -299,10 +369,16 @@ function updateIdUsuario(idUsuario) {
                             {listMensajes.map(mensaj => (
                                 <div className = "div_item_mensaje" className = {mensaj.sender == idUsuario ? "it_mensaj_derecha" : "it_mensaj_izquierda"}>
                                 <span key = {mensaj.id} className = "it_mensaje">
-                                    {mensaj.es_archivo ? (
-                                        <span className = "it_mensaj_descarga" onClick = {() => desc_archivo(mensaj.message, mensaj.created_at)}>{mensaj.message}</span>
+                                    <span>{mensaj.message}</span>
+                                    {mensaj.es_archivo && getFileExtension1(mensaj.message) === "txt" ? (
+                                        <span className = "it_mensaj_descarga" onClick = {() => desc_archivo_texto(mensaj.message, mensaj.created_at)}>Descargar</span>
                                     ) : (
-                                        <span>{mensaj.message}</span>
+                                        <span></span>
+                                    )}
+                                    {mensaj.es_archivo && getFileExtension1(mensaj.message) === "jpg" ? (
+                                        <span className = "it_mensaj_descarga" onClick = {() => {desc_archivo_imagen(mensaj.message, mensaj.created_at); obtener_base64_imagen(mensaj.message, mensaj.created_at); }}>Descargar</span>
+                                    ) : (
+                                        <span></span>
                                     )}
                                     
                                 </span>
@@ -322,7 +398,7 @@ function updateIdUsuario(idUsuario) {
                     <input type = "file"  onChange={changeFileHandler}/>
                     <br />
                     <button type = "submit">ENVIAR</button>
-                    {isFileSelected ? (
+                    {isFileSelected && selectedFile !== [] ? (
                     <div>
                         <p>Filename: {selectedFile.name}</p>
                         <p>Filetype: {selectedFile.type}</p>
