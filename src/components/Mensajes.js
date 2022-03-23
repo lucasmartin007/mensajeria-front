@@ -164,10 +164,10 @@ function updateIdUsuario(idUsuario) {
             data = {
                 "sender": idUsuario,
                 "receiver": idOtroUsuario,
-                "message":selectedFile.name,
+                "message":envMensaje,
                 "created_at":fecha,
                 "es_archivo":false,
-                "nombre_archivo":selectedFile.name,
+                "nombre_archivo":"",
             };
         }
         
@@ -376,7 +376,7 @@ function updateIdUsuario(idUsuario) {
                                         <span></span>
                                     )}
                                     {mensaj.es_archivo && getFileExtension1(mensaj.message) === "jpg" ? (
-                                        <span className = "it_mensaj_descarga" onClick = {() => {desc_archivo_imagen(mensaj.message, mensaj.created_at); obtener_base64_imagen(mensaj.message, mensaj.created_at); }}>Descargar</span>
+                                        <span className = "it_mensaj_descarga" onClick = {() => {desc_archivo_imagen(mensaj.message, mensaj.created_at); }}>Descargar</span>
                                     ) : (
                                         <span></span>
                                     )}
